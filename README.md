@@ -75,7 +75,6 @@ This project uses Bun due to ARM64 Windows compatibility issues with npm and Rol
 ## Author
 
 **Ahmed & Ali**  
-Full-stack Developer  
 EC Utbildning — Web Development Program
 
 ## License
