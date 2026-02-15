@@ -1,34 +1,21 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div className="min-h-screen bg-white">
+      {/* Hero Section */}
+      <section className="bg-primary text-white py-20 px-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6">
+            Värdera din bil — snabbt och enkelt
+          </h1>
+          <p className="text-xl md:text-2xl mb-8 text-blue-100">
+            Få en professionell värdering på 60 sekunder. Gratis och transparent.
+          </p>
+          <button className="bg-accent hover:bg-green-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition duration-300">
+            Börja värdera →
+          </button>
+        </div>
+      </section>
+    </div>
   )
 }
 

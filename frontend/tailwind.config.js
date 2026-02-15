@@ -6,9 +6,17 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
 
-  // Anpassa färger/storlekar här vid behov
+  // Anpassa färger här
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        // VärderaBil färgschema
+        primary: '#1B3A5C',      // Mörkblå - huvudfärg
+        teal: '#0F7B79',         // Teal - miljövänlig accent
+        'light-blue': '#D6E8F7', // Ljusblå - bakgrunder
+        accent: '#1A6B3A',       // Grön - CTA-knappar
+      },
+    },
   },
 
   plugins: [],
