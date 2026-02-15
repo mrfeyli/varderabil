@@ -1,18 +1,52 @@
+import './App.css'
+
 function App() {
   return (
-    <div className="min-h-screen bg-white">
+    <div>
       {/* Hero Section */}
-      <section className="bg-primary text-white py-20 px-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">
-            Värdera din bil — snabbt och enkelt
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 text-blue-100">
+      <section className="hero">
+        <div className="hero-container">
+          <h1>Värdera din bil — snabbt och enkelt</h1>
+          <p>
             Få en professionell värdering på 60 sekunder. Gratis och transparent.
           </p>
-          <button className="bg-accent hover:bg-green-700 text-white font-bold py-4 px-8 rounded-lg text-lg transition duration-300">
-            Börja värdera →
-          </button>
+          <button>Börja värdera →</button>
+        </div>
+      </section>
+
+      {/* Hur det fungerar */}
+      <section className="how-it-works">
+        <div className="how-container">
+          <h2>Så här fungerar det</h2>
+          
+          <div className="steps">
+            {/* Steg 1 */}
+            <div className="step">
+              <div className="step-number">1</div>
+              <h3>Fyll i uppgifter</h3>
+              <p>
+                Ange märke, modell, årsmodell, miltal och skick på din bil.
+              </p>
+            </div>
+
+            {/* Steg 2 */}
+            <div className="step">
+              <div className="step-number">2</div>
+              <h3>Få värdering</h3>
+              <p>
+                Vårt system analyserar marknadsdata och ger dig en rättvis värdering direkt.
+              </p>
+            </div>
+
+            {/* Steg 3 */}
+            <div className="step">
+              <div className="step-number">3</div>
+              <h3>Ladda ner rapport</h3>
+              <p>
+                Få din värdering som PDF och använd den när du säljer eller köper bil.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
     </div>

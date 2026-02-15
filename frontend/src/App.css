@@ -1,0 +1,109 @@
+/* Hero Section */
+.hero {
+  background-color: var(--primary);
+  color: white;
+  padding: 5rem 2rem;
+  text-align: center;
+}
+
+.hero-container {
+  max-width: 56rem;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  font-size: 3.75rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+.hero p {
+  font-size: 1.5rem;
+  margin-bottom: 2rem;
+  color: #D6E8F7;
+}
+
+.hero button {
+  background-color: var(--accent);
+  color: white;
+  font-weight: bold;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  font-size: 1.125rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.hero button:hover {
+  background-color: #166534;
+}
+
+/* Hur det fungerar Section */
+.how-it-works {
+  padding: 5rem 2rem;
+  background-color: var(--gray-50);
+}
+
+.how-container {
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.how-it-works h2 {
+  font-size: 2.25rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 4rem;
+  color: var(--gray-800);
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 3rem;
+}
+
+.step {
+  text-align: center;
+}
+
+.step-number {
+  background-color: var(--teal);
+  color: white;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0 auto 1.5rem;
+}
+
+.step h3 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: var(--gray-800);
+}
+
+.step p {
+  color: var(--gray-600);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+  
+  .hero p {
+    font-size: 1.25rem;
+  }
+  
+  .steps {
+    grid-template-columns: 1fr;
+  }
+}

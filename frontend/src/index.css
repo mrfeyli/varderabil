@@ -1,3 +1,26 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* VärderaBil — Global Styles */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* VärderaBil Färger */
+:root {
+  --primary: #1B3A5C;
+  --teal: #0F7B79;
+  --light-blue: #D6E8F7;
+  --accent: #1A6B3A;
+  --gray-50: #F9FAFB;
+  --gray-600: #4B5563;
+  --gray-800: #1F2937;
+}
