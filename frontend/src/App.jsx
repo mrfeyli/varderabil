@@ -49,6 +49,19 @@ function App() {
           </div>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="footer">
+        <div className="footer-container">
+          <div className="footer-links">
+            <a href="#om">Om oss</a>
+            <a href="#hur">Hur det fungerar</a>
+            <a href="#faq">FAQ</a>
+            <a href="#integritet">Integritetspolicy</a>
+          </div>
+          <p>&copy; 2026 VärderaBil. Alla rättigheter förbehållna.</p>
+        </div>
+      </footer>
     </div>
   )
 }
