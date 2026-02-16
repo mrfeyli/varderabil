@@ -64,121 +64,95 @@
 /* Värderingsformulär */
 .valuation-section {
   background: linear-gradient(135deg, #9CA3AF 0%, #6B7280 100%);
-  padding: 6rem 2rem;
-  min-height: 60vh;
+  padding: 3rem 2rem;
+  min-height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: center;
 }
 
 .valuation-container {
-  max-width: 42rem;
+  max-width: 80rem;
   margin: 0 auto;
-  text-align: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: center;
 }
 
-.valuation-container h1 {
+.hero-content {
   color: white;
-  font-size: 3rem;
+}
+
+.hero-content h1 {
+  font-size: 2.75rem;
   font-weight: bold;
   margin-bottom: 1rem;
+  line-height: 1.2;
 }
 
-.valuation-container p {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 1.25rem;
-  margin-bottom: 3rem;
-}
-
-.regnummer-input-wrapper {
-  background: white;
-  border-radius: 0.75rem;
-  padding: 0.5rem;
-  display: flex;
-  gap: 0.5rem;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.regnummer-plate {
-  background: #003399;
-  border: 3px solid #003399;
-  border-radius: 0.5rem;
-  padding: 0.75rem 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  min-width: 80px;
-}
-
-.eu-stars {
-  background: #003399;
-  color: #FFCC00;
-  font-size: 1rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  line-height: 1;
-}
-
-.eu-stars span:first-child {
-  font-size: 0.7rem;
-}
-
-.country-code {
-  color: white;
-  font-weight: bold;
-  font-size: 1.25rem;
-}
-
-.regnummer-input {
-  flex: 1;
-  border: 2px solid #E5E7EB;
-  border-radius: 0.5rem;
-  padding: 1rem 1.5rem;
+.hero-content p {
   font-size: 1.125rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 2px;
+  margin-bottom: 1.5rem;
+  opacity: 0.95;
 }
 
-.regnummer-input:focus {
-  outline: none;
-  border-color: var(--accent);
+.hero-features {
+  list-style: none;
+  padding: 0;
 }
 
-.valuation-button {
+.hero-features li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+}
+
+.hero-features li::before {
+  content: "✓";
   background-color: var(--accent);
   color: white;
-  padding: 1rem 2rem;
-  border-radius: 0.5rem;
-  font-size: 1.125rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-weight: bold;
-  border: none;
-  cursor: pointer;
-  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-/* Manuellt formulär */
-.manual-form {
+.form-card {
   background: white;
   border-radius: 1rem;
   padding: 2rem;
-  max-width: 600px;
-  margin: 3rem auto 0;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
 }
 
-.manual-form h3 {
+.form-card h2 {
   color: var(--gray-800);
   font-size: 1.5rem;
   margin-bottom: 1.5rem;
   text-align: center;
 }
 
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-grid .form-group {
+  margin-bottom: 0;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 
 .form-group label {
@@ -220,25 +194,14 @@
   background-color: #166534;
 }
 
-.hidden {
-  display: none;
-}
-
-.valuation-button:hover {
-  background-color: #166534;
-}
-
-@media (max-width: 768px) {
-  .valuation-container h1 {
-    font-size: 2rem;
+@media (max-width: 968px) {
+  .valuation-container {
+    grid-template-columns: 1fr;
+    gap: 3rem;
   }
   
-  .regnummer-input-wrapper {
-    flex-direction: column;
-  }
-  
-  .regnummer-plate {
-    justify-content: center;
+  .hero-content h1 {
+    font-size: 2.5rem;
   }
 }
 

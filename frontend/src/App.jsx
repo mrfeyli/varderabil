@@ -1,13 +1,6 @@
 import './App.css'
-import { useState } from 'react'
 
 function App() {
-  const [showForm, setShowForm] = useState(false)
-
-  const handleValuationClick = () => {
-    setShowForm(true)
-  }
-
   return (
     <div>
       {/* Navigation */}
@@ -26,65 +19,63 @@ function App() {
       {/* Värderingsformulär */}
       <section className="valuation-section">
         <div className="valuation-container">
-          <h1>Värdera din bil gratis</h1>
-          <p>Ange ditt registreringsnummer så hämtar vi biluppgifterna automatiskt</p>
-          
-          <div className="regnummer-input-wrapper">
-            <div className="regnummer-plate">
-              <div className="eu-stars">
-                <span>★★★★★★</span>
-                <span>★★★★★★</span>
-              </div>
-              <div className="country-code">S</div>
-            </div>
-            <input 
-              type="text" 
-              className="regnummer-input" 
-              placeholder="ABC123"
-              maxLength="6"
-            />
-            <button className="valuation-button" onClick={handleValuationClick}>
-              Värdera →
-            </button>
+          {/* Vänster sida - Text */}
+          <div className="hero-content">
+            <h1>AI-driven bilvärdering med jämförelse från hela marknaden</h1>
+            <p>Vi analyserar tusentals annonser från samtliga bilsajter för att ge dig det mest rättvisa marknadspriset</p>
+            <ul className="hero-features">
+              <li>AI-baserad värdering som jämför priser från Blocket, Wayke, Kvdbil med flera</li>
+              <li>Realtidsdata från hela den svenska bilmarknaden</li>
+              <li>Transparent värdering — se exakt hur vi räknar</li>
+              <li>Gratis PDF-rapport du kan använda vid försäljning</li>
+            </ul>
           </div>
 
-          {/* Manuellt formulär - visas när man klickar "Värdera" */}
-          {showForm && (
-            <div className="manual-form">
-              <h3>Fyll i biluppgifter</h3>
-              
+          {/* Höger sida - Formulär */}
+          <div className="form-card">
+            <h2>Få din AI-värdering på 60 sekunder</h2>
+            
+            <div className="form-grid">
               <div className="form-group">
-                <label>Bilmärke</label>
+                <label>Reg.nr *</label>
+                <input 
+                  type="text" 
+                  placeholder="ABC123"
+                  maxLength="6"
+                  style={{ textTransform: 'uppercase' }}
+                />
+              </div>
+
+              <div className="form-group">
+                <label>Bilmärke *</label>
                 <select>
                   <option value="">Välj märke</option>
                   <option value="volvo">Volvo</option>
-                  <option value="volkswagen">Volkswagen</option>
+                  <option value="volkswagen">VW</option>
                   <option value="toyota">Toyota</option>
                   <option value="bmw">BMW</option>
-                  <option value="mercedes">Mercedes-Benz</option>
+                  <option value="mercedes">Mercedes</option>
                   <option value="audi">Audi</option>
-                  <option value="ford">Ford</option>
-                  <option value="skoda">Skoda</option>
                 </select>
               </div>
 
               <div className="form-group">
-                <label>Modell</label>
-                <input type="text" placeholder="t.ex. V70, Golf, Corolla" />
+                <label>Modell *</label>
+                <input type="text" placeholder="V70, Golf..." />
               </div>
 
               <div className="form-group">
-                <label>Årsmodell</label>
-                <input type="number" placeholder="t.ex. 2018" min="1990" max="2026" />
+                <label>Årsmodell *</label>
+                <input type="number" placeholder="2018" min="1990" max="2026" />
               </div>
 
               <div className="form-group">
-                <label>Miltal (mil)</label>
-                <input type="number" placeholder="t.ex. 15000" />
+                <label>Miltal (mil) *</label>
+                <input type="number" placeholder="15000" />
               </div>
 
               <div className="form-group">
-                <label>Skick</label>
+                <label>Skick *</label>
                 <select>
                   <option value="">Välj skick</option>
                   <option value="excellent">Utmärkt</option>
@@ -93,43 +84,51 @@ function App() {
                   <option value="poor">Dåligt</option>
                 </select>
               </div>
-
-              <button className="submit-button">Beräkna värde</button>
             </div>
-          )}
+
+            <button className="submit-button">Få AI-värdering →</button>
+            <p style={{ 
+              textAlign: 'center', 
+              marginTop: '1rem', 
+              fontSize: '0.875rem',
+              color: '#6B7280'
+            }}>
+              100% gratis • Svar direkt
+            </p>
+          </div>
         </div>
       </section>
 
       {/* Hur det fungerar */}
       <section className="how-it-works">
         <div className="how-container">
-          <h2>Så här fungerar det</h2>
+          <h2>Så fungerar vår AI-värdering</h2>
           
           <div className="steps">
             {/* Steg 1 */}
             <div className="step">
               <div className="step-number">1</div>
-              <h3>Fyll i uppgifter</h3>
+              <h3>Fyll i biluppgifter</h3>
               <p>
-                Ange märke, modell, årsmodell, miltal och skick på din bil.
+                Ange registreringsnummer eller fyll i manuellt. Tar 60 sekunder.
               </p>
             </div>
 
             {/* Steg 2 */}
             <div className="step">
               <div className="step-number">2</div>
-              <h3>Få värdering</h3>
+              <h3>AI analyserar marknaden</h3>
               <p>
-                Vårt system analyserar marknadsdata och ger dig en rättvis värdering direkt.
+                Vår AI jämför din bil mot tusentals annonser från Blocket, Wayke, Kvdbil och fler.
               </p>
             </div>
 
             {/* Steg 3 */}
             <div className="step">
               <div className="step-number">3</div>
-              <h3>Ladda ner rapport</h3>
+              <h3>Få värdering & PDF</h3>
               <p>
-                Få din värdering som PDF och använd den när du säljer eller köper bil.
+                Se ditt marknadspris direkt och ladda ner professionell värderingsrapport.
               </p>
             </div>
           </div>
