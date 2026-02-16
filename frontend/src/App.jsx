@@ -3,14 +3,41 @@ import './App.css'
 function App() {
   return (
     <div>
-      {/* Hero Section */}
-      <section className="hero">
-        <div className="hero-container">
-          <h1>Värdera din bil — snabbt och enkelt</h1>
-          <p>
-            Få en professionell värdering på 60 sekunder. Gratis och transparent.
-          </p>
-          <button>Börja värdera →</button>
+      {/* Navigation */}
+      <nav className="navbar">
+        <div className="nav-container">
+          <a href="#" className="logo">VärderaBil</a>
+          <div className="nav-links">
+            <a href="#hem">Hem</a>
+            <a href="#hur">Hur det fungerar</a>
+            <a href="#om">Om oss</a>
+            <a href="#vardera" className="nav-button">Börja värdera</a>
+          </div>
+        </div>
+      </nav>
+
+      {/* Värderingsformulär */}
+      <section className="valuation-section">
+        <div className="valuation-container">
+          <h1>Värdera din bil gratis</h1>
+          <p>Ange ditt registreringsnummer så hämtar vi biluppgifterna automatiskt</p>
+          
+          <div className="regnummer-input-wrapper">
+            <div className="regnummer-plate">
+              <div className="eu-stars">
+                <span>★★★★★★</span>
+                <span>★★★★★★</span>
+              </div>
+              <div className="country-code">S</div>
+            </div>
+            <input 
+              type="text" 
+              className="regnummer-input" 
+              placeholder="ABC123"
+              maxLength="6"
+            />
+            <button className="valuation-button">Värdera →</button>
+          </div>
         </div>
       </section>
 

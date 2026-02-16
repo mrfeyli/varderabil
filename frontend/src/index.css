@@ -14,13 +14,20 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* VärderaBil Färger */
+/* VärderaBil Färger — Uppdaterade */
 :root {
-  --primary: #1B3A5C;
-  --teal: #0F7B79;
-  --light-blue: #D6E8F7;
-  --accent: #1A6B3A;
+  --primary: #1B3A5C;           /* Mörkblå (hero) */
+  --teal: #0F7B79;              /* Teal (cirklar) */
+  --accent: #1A6B3A;            /* Grön (knappar) */
+  
+  /* Nya färger för navigation */
+  --nav-bg: #2C3E50;            /* Mörk grå/blå för navbar */
+  --nav-text: #ECF0F1;          /* Ljusgrå text */
+  --logo-color: #3498DB;        /* Ljusblå logotyp */
+  
+  /* Bakgrunder */
   --gray-50: #F9FAFB;
+  --gray-100: #F3F4F6;
   --gray-600: #4B5563;
   --gray-800: #1F2937;
 }

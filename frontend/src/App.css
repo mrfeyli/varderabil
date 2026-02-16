@@ -1,3 +1,183 @@
+/* Navigation */
+.navbar {
+  background-color: var(--nav-bg);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-container {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: var(--logo-color);
+  text-decoration: none;
+  letter-spacing: -0.5px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.nav-links a {
+  color: var(--nav-text);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  color: white;
+}
+
+.nav-button {
+  background-color: var(--accent);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.nav-button:hover {
+  background-color: #166534;
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+}
+
+/* Värderingsformulär */
+.valuation-section {
+  background: linear-gradient(135deg, #9CA3AF 0%, #6B7280 100%);
+  padding: 6rem 2rem;
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.valuation-container {
+  max-width: 42rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.valuation-container h1 {
+  color: white;
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.valuation-container p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.25rem;
+  margin-bottom: 3rem;
+}
+
+.regnummer-input-wrapper {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.regnummer-plate {
+  background: #003399;
+  border: 3px solid #003399;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 80px;
+}
+
+.eu-stars {
+  background: #003399;
+  color: #FFCC00;
+  font-size: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+
+.eu-stars span:first-child {
+  font-size: 0.7rem;
+}
+
+.country-code {
+  color: white;
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
+.regnummer-input {
+  flex: 1;
+  border: 2px solid #E5E7EB;
+  border-radius: 0.5rem;
+  padding: 1rem 1.5rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.regnummer-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.valuation-button {
+  background-color: var(--accent);
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  font-size: 1.125rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.valuation-button:hover {
+  background-color: #166534;
+}
+
+@media (max-width: 768px) {
+  .valuation-container h1 {
+    font-size: 2rem;
+  }
+  
+  .regnummer-input-wrapper {
+    flex-direction: column;
+  }
+  
+  .regnummer-plate {
+    justify-content: center;
+  }
+}
+
 /* Hero Section */
 .hero {
   background-color: var(--primary);
@@ -93,21 +273,6 @@
   color: var(--gray-600);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .hero h1 {
-    font-size: 2.5rem;
-  }
-  
-  .hero p {
-    font-size: 1.25rem;
-  }
-  
-  .steps {
-    grid-template-columns: 1fr;
-  }
-}
-
 /* Footer */
 .footer {
   background-color: var(--primary);
@@ -143,4 +308,19 @@
 .footer p {
   color: #D6E8F7;
   font-size: 0.875rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+  
+  .hero p {
+    font-size: 1.25rem;
+  }
+  
+  .steps {
+    grid-template-columns: 1fr;
+  }
 }
