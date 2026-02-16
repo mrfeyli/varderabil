@@ -1,6 +1,24 @@
 import './App.css'
+import { useEffect } from 'react'
 
 function App() {
+  // Scroll-effekt för navbar
+  useEffect(() => {
+    const handleScroll = () => {
+      const navbar = document.querySelector('.navbar')
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled')
+      } else {
+        navbar.classList.remove('scrolled')
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    
+    // Cleanup när komponenten avmonteras
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   return (
     <div>
       {/* Navigation */}
@@ -8,10 +26,10 @@ function App() {
         <div className="nav-container">
           <a href="#" className="logo">VärderaBil</a>
           <div className="nav-links">
-            <a href="#hem">Hem</a>
+            <a href="#vardera" className="nav-button">Börja värdera</a>
             <a href="#hur">Hur det fungerar</a>
             <a href="#om">Om oss</a>
-            <a href="#vardera" className="nav-button">Börja värdera</a>
+            <a href="#login">Logga in</a>
           </div>
         </div>
       </nav>
