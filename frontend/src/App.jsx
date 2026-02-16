@@ -1,6 +1,13 @@
 import './App.css'
+import { useState } from 'react'
 
 function App() {
+  const [showForm, setShowForm] = useState(false)
+
+  const handleValuationClick = () => {
+    setShowForm(true)
+  }
+
   return (
     <div>
       {/* Navigation */}
@@ -36,8 +43,60 @@ function App() {
               placeholder="ABC123"
               maxLength="6"
             />
-            <button className="valuation-button">Värdera →</button>
+            <button className="valuation-button" onClick={handleValuationClick}>
+              Värdera →
+            </button>
           </div>
+
+          {/* Manuellt formulär - visas när man klickar "Värdera" */}
+          {showForm && (
+            <div className="manual-form">
+              <h3>Fyll i biluppgifter</h3>
+              
+              <div className="form-group">
+                <label>Bilmärke</label>
+                <select>
+                  <option value="">Välj märke</option>
+                  <option value="volvo">Volvo</option>
+                  <option value="volkswagen">Volkswagen</option>
+                  <option value="toyota">Toyota</option>
+                  <option value="bmw">BMW</option>
+                  <option value="mercedes">Mercedes-Benz</option>
+                  <option value="audi">Audi</option>
+                  <option value="ford">Ford</option>
+                  <option value="skoda">Skoda</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Modell</label>
+                <input type="text" placeholder="t.ex. V70, Golf, Corolla" />
+              </div>
+
+              <div className="form-group">
+                <label>Årsmodell</label>
+                <input type="number" placeholder="t.ex. 2018" min="1990" max="2026" />
+              </div>
+
+              <div className="form-group">
+                <label>Miltal (mil)</label>
+                <input type="number" placeholder="t.ex. 15000" />
+              </div>
+
+              <div className="form-group">
+                <label>Skick</label>
+                <select>
+                  <option value="">Välj skick</option>
+                  <option value="excellent">Utmärkt</option>
+                  <option value="good">Bra</option>
+                  <option value="fair">Acceptabelt</option>
+                  <option value="poor">Dåligt</option>
+                </select>
+              </div>
+
+              <button className="submit-button">Beräkna värde</button>
+            </div>
+          )}
         </div>
       </section>
 
