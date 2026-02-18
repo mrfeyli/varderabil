@@ -21,6 +21,9 @@ function App() {
 
   // State för att visa/dölja resultatvy
   const [showResult, setShowResult] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
+  const [loadingProgress, setLoadingProgress] = useState(0)
+  const [loadingText, setLoadingText] = useState('')
   const [formData, setFormData] = useState({
     regNr: '',
     brand: '',
@@ -33,13 +36,40 @@ function App() {
   // Funktion som körs när användaren klickar "Få AI-värdering"
   const handleSubmit = (e) => {
     e.preventDefault()
-    // Mock-värdering (falskt värde för nu)
-    setShowResult(true)
+    
+    // Starta laddning
+    setIsLoading(true)
+    setLoadingProgress(0)
+    
+    // Steg 1: Analyserar biluppgifter (30%)
+    setLoadingText('Analyserar biluppgifter...')
+    setLoadingProgress(30)
+    
+    setTimeout(() => {
+      // Steg 2: Jämför mot marknaden (60%)
+      setLoadingText('Jämför mot tusentals annonser...')
+      setLoadingProgress(60)
+      
+      setTimeout(() => {
+        // Steg 3: Beräknar värde (100%)
+        setLoadingText('Beräknar slutligt marknadsvärde...')
+        setLoadingProgress(100)
+        
+        setTimeout(() => {
+          // Visa resultat
+          setIsLoading(false)
+          setShowResult(true)
+        }, 800)
+      }, 1000)
+    }, 1000)
   }
 
   // Funktion för att börja om
   const handleNewValuation = () => {
     setShowResult(false)
+    setIsLoading(false)
+    setLoadingProgress(0)
+    setLoadingText('')
     setFormData({
       regNr: '',
       brand: '',
@@ -80,8 +110,26 @@ function App() {
             </ul>
           </div>
 
-          {/* Höger sida - Formulär eller Resultat */}
-          {!showResult ? (
+          {/* Höger sida - Formulär, Laddning eller Resultat */}
+          {isLoading ? (
+            // Visa laddning med progress bar
+            <div className="loading-card">
+              <h3>AI analyserar din bil</h3>
+              
+              <div className="progress-container">
+                <p className="progress-text">{loadingText}</p>
+                
+                <div className="progress-bar-bg">
+                  <div 
+                    className="progress-bar-fill" 
+                    style={{ width: `${loadingProgress}%` }}
+                  ></div>
+                </div>
+                
+                <div className="progress-percentage">{loadingProgress}%</div>
+              </div>
+            </div>
+          ) : !showResult ? (
             // Visa formulär
             <div className="form-card">
               <h2>Få din AI-värdering på 60 sekunder</h2>
@@ -266,8 +314,51 @@ function App() {
         </div>
       </section>
 
+      {/* Om oss */}
+      <section className="about-section" id="om">
+        <div className="about-container">
+          <h2>Om VärderaBil</h2>
+          
+          <div className="about-content">
+            <p>
+              VärderaBil grundades 2026 med en enkel vision: att skapa total 
+              transparens på den svenska bilmarknaden. Vi använder avancerad 
+              AI-teknologi för att analysera tusentals bilannonser i realtid 
+              och ge dig det mest rättvisa marknadspriset.
+            </p>
+            
+            <p>
+              Till skillnad från traditionella värderingstjänster jämför vi 
+              data från alla stora bilsajter – Blocket, Wayke, Kvdbil och fler. 
+              Detta ger dig en värdering baserad på faktiska marknadspriser, 
+              inte gissningar.
+            </p>
+            
+            <p>
+              Sedan lanseringen har vi hjälpt över 10,000 svenskar att få 
+              rättvisa värderingar på sina bilar. Helt gratis, helt transparent.
+            </p>
+          </div>
+          
+          <div className="about-stats">
+            <div className="stat">
+              <div className="stat-number">10,000+</div>
+              <div className="stat-label">Värderingar</div>
+            </div>
+            <div className="stat">
+              <div className="stat-number">2026</div>
+              <div className="stat-label">Grundat</div>
+            </div>
+            <div className="stat">
+              <div className="stat-number">100%</div>
+              <div className="stat-label">Gratis</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
-      <footer className="footer" id="om">
+      <footer className="footer">
         <div className="footer-container">
           <div className="footer-links">
             <a href="#om">Om oss</a>
