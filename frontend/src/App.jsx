@@ -24,6 +24,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false)
   const [loadingProgress, setLoadingProgress] = useState(0)
   const [loadingText, setLoadingText] = useState('')
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [formData, setFormData] = useState({
     regNr: '',
     brand: '',
@@ -80,20 +81,59 @@ function App() {
     })
   }
 
+  // Hamburgermeny funktioner
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen)
+  }
+
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false)
+  }
+
   return (
     <div>
       {/* Navigation */}
       <nav className="navbar">
         <div className="nav-container">
           <a href="#" className="logo">VärderaBil</a>
+          
+          {/* Desktop navigation */}
           <div className="nav-links">
             <a href="#vardera" className="nav-button">Börja värdera</a>
             <a href="#hur">Hur det fungerar</a>
             <a href="#om">Om oss</a>
             <a href="#login">Logga in</a>
           </div>
+          
+          {/* Hamburger icon */}
+          <div className="hamburger" onClick={toggleMobileMenu}>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
         </div>
       </nav>
+
+      {/* Mobile menu overlay */}
+      <div 
+        className={`menu-overlay ${mobileMenuOpen ? 'open' : ''}`}
+        onClick={closeMobileMenu}
+      ></div>
+
+      {/* Mobile menu */}
+      <div className={`mobile-menu ${mobileMenuOpen ? 'open' : ''}`}>
+        <div className="mobile-menu-header">
+          <a href="#" className="logo" onClick={closeMobileMenu}>VärderaBil</a>
+          <button className="close-btn" onClick={closeMobileMenu}>×</button>
+        </div>
+        
+        <div className="mobile-menu-links">
+          <a href="#vardera" onClick={closeMobileMenu}>Börja värdera</a>
+          <a href="#hur" onClick={closeMobileMenu}>Hur det fungerar</a>
+          <a href="#om" onClick={closeMobileMenu}>Om oss</a>
+          <a href="#login" onClick={closeMobileMenu}>Logga in</a>
+        </div>
+      </div>
 
       {/* Värderingsformulär */}
       <section className="valuation-section">
