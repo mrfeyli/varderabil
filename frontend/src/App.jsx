@@ -118,7 +118,7 @@ function App() {
       </section>
 
       {/* Hur det fungerar */}
-      <section className="how-it-works">
+      <section className="how-it-works" id="hur">
         <div className="how-container">
           <h2>Så fungerar vår AI-värdering</h2>
           
@@ -154,7 +154,7 @@ function App() {
       </section>
 
       {/* Footer */}
-      <footer className="footer">
+      <footer className="footer" id="om">
         <div className="footer-container">
           <div className="footer-links">
             <a href="#om">Om oss</a>
