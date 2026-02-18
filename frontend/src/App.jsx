@@ -25,6 +25,7 @@ function App() {
   const [loadingProgress, setLoadingProgress] = useState(0)
   const [loadingText, setLoadingText] = useState('')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [errors, setErrors] = useState({})
   const [formData, setFormData] = useState({
     regNr: '',
     brand: '',
@@ -34,9 +35,116 @@ function App() {
     condition: ''
   })
 
+  // Validera enskilt fält (när användaren lämnar det)
+  const validateField = (fieldName, value) => {
+    const newErrors = { ...errors }
+    
+    switch(fieldName) {
+      case 'regNr':
+        if (!value || value.length !== 6) {
+          newErrors.regNr = 'Registreringsnummer måste vara 6 tecken'
+        } else {
+          delete newErrors.regNr
+        }
+        break
+        
+      case 'brand':
+        if (!value) {
+          newErrors.brand = 'Välj ett bilmärke'
+        } else {
+          delete newErrors.brand
+        }
+        break
+        
+      case 'model':
+        if (!value || value.trim().length < 2) {
+          newErrors.model = 'Ange bilmodell (minst 2 tecken)'
+        } else {
+          delete newErrors.model
+        }
+        break
+        
+      case 'year':
+        const year = parseInt(value)
+        if (!value || year < 1990 || year > 2026) {
+          newErrors.year = 'Årsmodell måste vara mellan 1990-2026'
+        } else {
+          delete newErrors.year
+        }
+        break
+        
+      case 'mileage':
+        const mileage = parseInt(value)
+        if (!value || mileage < 0 || mileage > 100000) {
+          newErrors.mileage = 'Miltal måste vara mellan 0-100,000 mil'
+        } else {
+          delete newErrors.mileage
+        }
+        break
+        
+      case 'condition':
+        if (!value) {
+          newErrors.condition = 'Välj bilens skick'
+        } else {
+          delete newErrors.condition
+        }
+        break
+    }
+    
+    setErrors(newErrors)
+  }
+
+  // Validera formulär
+  const validateForm = () => {
+    const newErrors = {}
+    
+    // Validera regnummer (exakt 6 tecken)
+    if (!formData.regNr || formData.regNr.length !== 6) {
+      newErrors.regNr = 'Registreringsnummer måste vara 6 tecken'
+    }
+    
+    // Validera bilmärke
+    if (!formData.brand) {
+      newErrors.brand = 'Välj ett bilmärke'
+    }
+    
+    // Validera modell
+    if (!formData.model || formData.model.trim().length < 2) {
+      newErrors.model = 'Ange bilmodell (minst 2 tecken)'
+    }
+    
+    // Validera årsmodell
+    const year = parseInt(formData.year)
+    if (!formData.year || year < 1990 || year > 2026) {
+      newErrors.year = 'Årsmodell måste vara mellan 1990-2026'
+    }
+    
+    // Validera miltal
+    const mileage = parseInt(formData.mileage)
+    if (!formData.mileage || mileage < 0 || mileage > 100000) {
+      newErrors.mileage = 'Miltal måste vara mellan 0-100,000 mil'
+    }
+    
+    // Validera skick
+    if (!formData.condition) {
+      newErrors.condition = 'Välj bilens skick'
+    }
+    
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
   // Funktion som körs när användaren klickar "Få AI-värdering"
   const handleSubmit = (e) => {
     e.preventDefault()
+    
+    // Validera först
+    if (!validateForm()) {
+      return
+    }
+    
+    // Rensa errors
+    setErrors({})
     
     // Starta laddning
     setIsLoading(true)
@@ -71,6 +179,7 @@ function App() {
     setIsLoading(false)
     setLoadingProgress(0)
     setLoadingText('')
+    setErrors({})
     setFormData({
       regNr: '',
       brand: '',
@@ -176,7 +285,7 @@ function App() {
               
               <form onSubmit={handleSubmit}>
                 <div className="form-grid">
-                  <div className="form-group">
+                  <div className={`form-group ${errors.regNr ? 'error' : ''}`}>
                     <label>Reg.nr *</label>
                     <input 
                       type="text" 
@@ -185,16 +294,17 @@ function App() {
                       style={{ textTransform: 'uppercase' }}
                       value={formData.regNr}
                       onChange={(e) => setFormData({...formData, regNr: e.target.value})}
-                      required
+                      onBlur={(e) => validateField('regNr', e.target.value)}
                     />
+                    {errors.regNr && <span className="error-message">{errors.regNr}</span>}
                   </div>
 
-                  <div className="form-group">
+                  <div className={`form-group ${errors.brand ? 'error' : ''}`}>
                     <label>Bilmärke *</label>
                     <select 
                       value={formData.brand}
                       onChange={(e) => setFormData({...formData, brand: e.target.value})}
-                      required
+                      onBlur={(e) => validateField('brand', e.target.value)}
                     >
                       <option value="">Välj märke</option>
                       <option value="volvo">Volvo</option>
@@ -204,20 +314,22 @@ function App() {
                       <option value="mercedes">Mercedes</option>
                       <option value="audi">Audi</option>
                     </select>
+                    {errors.brand && <span className="error-message">{errors.brand}</span>}
                   </div>
 
-                  <div className="form-group">
+                  <div className={`form-group ${errors.model ? 'error' : ''}`}>
                     <label>Modell *</label>
                     <input 
                       type="text" 
                       placeholder="V70, Golf..." 
                       value={formData.model}
                       onChange={(e) => setFormData({...formData, model: e.target.value})}
-                      required
+                      onBlur={(e) => validateField('model', e.target.value)}
                     />
+                    {errors.model && <span className="error-message">{errors.model}</span>}
                   </div>
 
-                  <div className="form-group">
+                  <div className={`form-group ${errors.year ? 'error' : ''}`}>
                     <label>Årsmodell *</label>
                     <input 
                       type="number" 
@@ -226,27 +338,29 @@ function App() {
                       max="2026"
                       value={formData.year}
                       onChange={(e) => setFormData({...formData, year: e.target.value})}
-                      required
+                      onBlur={(e) => validateField('year', e.target.value)}
                     />
+                    {errors.year && <span className="error-message">{errors.year}</span>}
                   </div>
 
-                  <div className="form-group">
+                  <div className={`form-group ${errors.mileage ? 'error' : ''}`}>
                     <label>Miltal (mil) *</label>
                     <input 
                       type="number" 
                       placeholder="15000"
                       value={formData.mileage}
                       onChange={(e) => setFormData({...formData, mileage: e.target.value})}
-                      required
+                      onBlur={(e) => validateField('mileage', e.target.value)}
                     />
+                    {errors.mileage && <span className="error-message">{errors.mileage}</span>}
                   </div>
 
-                  <div className="form-group">
+                  <div className={`form-group ${errors.condition ? 'error' : ''}`}>
                     <label>Skick *</label>
                     <select
                       value={formData.condition}
                       onChange={(e) => setFormData({...formData, condition: e.target.value})}
-                      required
+                      onBlur={(e) => validateField('condition', e.target.value)}
                     >
                       <option value="">Välj skick</option>
                       <option value="excellent">Utmärkt</option>
@@ -254,14 +368,15 @@ function App() {
                       <option value="fair">Acceptabelt</option>
                       <option value="poor">Dåligt</option>
                     </select>
+                    {errors.condition && <span className="error-message">{errors.condition}</span>}
                   </div>
                 </div>
 
                 <button type="submit" className="submit-button">Få AI-värdering →</button>
                 <p style={{ 
                   textAlign: 'center', 
-                  marginTop: '1rem', 
-                  fontSize: '0.875rem',
+                  marginTop: '0.75rem', 
+                  fontSize: '0.8rem',
                   color: '#6B7280'
                 }}>
                   100% gratis • Svar direkt
