@@ -1,5 +1,5 @@
 import './App.css'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 function App() {
   // Scroll-effekt för navbar
@@ -18,6 +18,37 @@ function App() {
     // Cleanup när komponenten avmonteras
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  // State för att visa/dölja resultatvy
+  const [showResult, setShowResult] = useState(false)
+  const [formData, setFormData] = useState({
+    regNr: '',
+    brand: '',
+    model: '',
+    year: '',
+    mileage: '',
+    condition: ''
+  })
+
+  // Funktion som körs när användaren klickar "Få AI-värdering"
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    // Mock-värdering (falskt värde för nu)
+    setShowResult(true)
+  }
+
+  // Funktion för att börja om
+  const handleNewValuation = () => {
+    setShowResult(false)
+    setFormData({
+      regNr: '',
+      brand: '',
+      model: '',
+      year: '',
+      mileage: '',
+      condition: ''
+    })
+  }
 
   return (
     <div>
@@ -49,71 +80,153 @@ function App() {
             </ul>
           </div>
 
-          {/* Höger sida - Formulär */}
-          <div className="form-card">
-            <h2>Få din AI-värdering på 60 sekunder</h2>
-            
-            <div className="form-grid">
-              <div className="form-group">
-                <label>Reg.nr *</label>
-                <input 
-                  type="text" 
-                  placeholder="ABC123"
-                  maxLength="6"
-                  style={{ textTransform: 'uppercase' }}
-                />
+          {/* Höger sida - Formulär eller Resultat */}
+          {!showResult ? (
+            // Visa formulär
+            <div className="form-card">
+              <h2>Få din AI-värdering på 60 sekunder</h2>
+              
+              <form onSubmit={handleSubmit}>
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label>Reg.nr *</label>
+                    <input 
+                      type="text" 
+                      placeholder="ABC123"
+                      maxLength="6"
+                      style={{ textTransform: 'uppercase' }}
+                      value={formData.regNr}
+                      onChange={(e) => setFormData({...formData, regNr: e.target.value})}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Bilmärke *</label>
+                    <select 
+                      value={formData.brand}
+                      onChange={(e) => setFormData({...formData, brand: e.target.value})}
+                      required
+                    >
+                      <option value="">Välj märke</option>
+                      <option value="volvo">Volvo</option>
+                      <option value="volkswagen">VW</option>
+                      <option value="toyota">Toyota</option>
+                      <option value="bmw">BMW</option>
+                      <option value="mercedes">Mercedes</option>
+                      <option value="audi">Audi</option>
+                    </select>
+                  </div>
+
+                  <div className="form-group">
+                    <label>Modell *</label>
+                    <input 
+                      type="text" 
+                      placeholder="V70, Golf..." 
+                      value={formData.model}
+                      onChange={(e) => setFormData({...formData, model: e.target.value})}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Årsmodell *</label>
+                    <input 
+                      type="number" 
+                      placeholder="2018" 
+                      min="1990" 
+                      max="2026"
+                      value={formData.year}
+                      onChange={(e) => setFormData({...formData, year: e.target.value})}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Miltal (mil) *</label>
+                    <input 
+                      type="number" 
+                      placeholder="15000"
+                      value={formData.mileage}
+                      onChange={(e) => setFormData({...formData, mileage: e.target.value})}
+                      required
+                    />
+                  </div>
+
+                  <div className="form-group">
+                    <label>Skick *</label>
+                    <select
+                      value={formData.condition}
+                      onChange={(e) => setFormData({...formData, condition: e.target.value})}
+                      required
+                    >
+                      <option value="">Välj skick</option>
+                      <option value="excellent">Utmärkt</option>
+                      <option value="good">Bra</option>
+                      <option value="fair">Acceptabelt</option>
+                      <option value="poor">Dåligt</option>
+                    </select>
+                  </div>
+                </div>
+
+                <button type="submit" className="submit-button">Få AI-värdering →</button>
+                <p style={{ 
+                  textAlign: 'center', 
+                  marginTop: '1rem', 
+                  fontSize: '0.875rem',
+                  color: '#6B7280'
+                }}>
+                  100% gratis • Svar direkt
+                </p>
+              </form>
+            </div>
+          ) : (
+            // Visa resultat
+            <div className="result-card">
+              <h2 style={{ fontSize: '1.75rem', marginBottom: '2rem', color: 'var(--gray-800)' }}>
+                Din bils uppskattade värde
+              </h2>
+              
+              <div className="result-price">245 000 kr</div>
+              <p className="result-subtitle">Baserat på 1,247 liknande annonser</p>
+
+              <div className="result-details">
+                <h3>Biluppgifter</h3>
+                <div className="detail-row">
+                  <span className="detail-label">Registreringsnummer</span>
+                  <span className="detail-value">{formData.regNr}</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Märke & Modell</span>
+                  <span className="detail-value">{formData.brand} {formData.model}</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Årsmodell</span>
+                  <span className="detail-value">{formData.year}</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Miltal</span>
+                  <span className="detail-value">{formData.mileage} mil</span>
+                </div>
+                <div className="detail-row">
+                  <span className="detail-label">Skick</span>
+                  <span className="detail-value">
+                    {formData.condition === 'excellent' && 'Utmärkt'}
+                    {formData.condition === 'good' && 'Bra'}
+                    {formData.condition === 'fair' && 'Acceptabelt'}
+                    {formData.condition === 'poor' && 'Dåligt'}
+                  </span>
+                </div>
               </div>
 
-              <div className="form-group">
-                <label>Bilmärke *</label>
-                <select>
-                  <option value="">Välj märke</option>
-                  <option value="volvo">Volvo</option>
-                  <option value="volkswagen">VW</option>
-                  <option value="toyota">Toyota</option>
-                  <option value="bmw">BMW</option>
-                  <option value="mercedes">Mercedes</option>
-                  <option value="audi">Audi</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label>Modell *</label>
-                <input type="text" placeholder="V70, Golf..." />
-              </div>
-
-              <div className="form-group">
-                <label>Årsmodell *</label>
-                <input type="number" placeholder="2018" min="1990" max="2026" />
-              </div>
-
-              <div className="form-group">
-                <label>Miltal (mil) *</label>
-                <input type="number" placeholder="15000" />
-              </div>
-
-              <div className="form-group">
-                <label>Skick *</label>
-                <select>
-                  <option value="">Välj skick</option>
-                  <option value="excellent">Utmärkt</option>
-                  <option value="good">Bra</option>
-                  <option value="fair">Acceptabelt</option>
-                  <option value="poor">Dåligt</option>
-                </select>
+              <div className="result-actions">
+                <button className="btn-primary">Ladda ner PDF →</button>
+                <button className="btn-secondary" onClick={handleNewValuation}>
+                  Gör ny värdering
+                </button>
               </div>
             </div>
-
-            <button className="submit-button">Få AI-värdering →</button>
-            <p style={{ 
-              textAlign: 'center', 
-              marginTop: '1rem', 
-              fontSize: '0.875rem',
-              color: '#6B7280'
-            }}>
-              100% gratis • Svar direkt
-            </p>
-          </div>
+          )}
         </div>
       </section>
 
