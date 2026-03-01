@@ -35,3 +35,6 @@ venv/
 # Database — never commit
 *.db
 *.sqlite
+
+# Claude Code local config
+.claude/
