@@ -199,6 +199,12 @@ function App() {
     setMobileMenuOpen(false)
   }
 
+  const stepsConfig = [
+    { number: '01', icon: '⊕', title: 'Fyll i biluppgifter', desc: 'Ange registreringsnummer eller fyll i manuellt. Hela processen tar under 60 sekunder.' },
+    { number: '02', icon: '◈', title: 'AI analyserar marknaden', desc: 'Vår AI skannar tusentals annonser från Blocket, Wayke och Kvdbil i realtid.' },
+    { number: '03', icon: '✦', title: 'Få värdering & PDF', desc: 'Se exakt marknadspris direkt och ladda ner en professionell värderingsrapport.' },
+  ]
+
   return (
     <div>
       {/* Navigation */}
@@ -249,14 +255,18 @@ function App() {
         <div className="valuation-container">
           {/* Vänster sida - Text */}
           <div className="hero-content">
-            <h1>AI-driven bilvärdering med jämförelse från hela marknaden</h1>
-            <p>Vi analyserar tusentals annonser från samtliga bilsajter för att ge dig det mest rättvisa marknadspriset</p>
-            <ul className="hero-features">
-              <li>AI-baserad värdering som jämför priser från Blocket, Wayke, Kvdbil med flera</li>
-              <li>Realtidsdata från hela den svenska bilmarknaden</li>
-              <li>Transparent värdering — se exakt hur vi räknar</li>
-              <li>Gratis PDF-rapport du kan använda vid försäljning</li>
-            </ul>
+            <div className="hero-badge">AI-driven bilvärdering</div>
+            <h1>Få det rättvisa marknadspriset på din bil</h1>
+            <p>Vi jämför tusentals annonser från Blocket, Wayke och Kvdbil i realtid — helt gratis.</p>
+
+            {/* TODO(human): Implementera hero-stats nedan.
+                Lägg till 3 st .hero-stat element inuti .hero-stats.
+                Varje stat har en .hero-stat-number och en .hero-stat-label.
+                Välj 3 trovärdiga siffror som visar styrkan med tjänsten.
+                Exempel på värden: "10 000+", "3 källor", "60 sek" */}
+            <div className="hero-stats">
+
+            </div>
           </div>
 
           {/* Höger sida - Formulär, Laddning eller Resultat */}
@@ -264,7 +274,8 @@ function App() {
             // Visa laddning med progress bar
             <div className="loading-card">
               <h3>AI analyserar din bil</h3>
-              
+              <p className="loading-subtitle">scanning market data...</p>
+
               <div className="progress-container">
                 <p className="progress-text">{loadingText}</p>
                 
@@ -285,10 +296,12 @@ function App() {
               
               <form onSubmit={handleSubmit}>
                 <div className="form-grid">
-                  <div className={`form-group ${errors.regNr ? 'error' : ''}`}>
-                    <label>Reg.nr *</label>
-                    <input 
-                      type="text" 
+
+                  {/* Reg.nr — full bredd, primär identifierare */}
+                  <div className={`form-group full-width ${errors.regNr ? 'error' : ''}`}>
+                    <label>Registreringsnummer *</label>
+                    <input
+                      type="text"
                       placeholder="ABC123"
                       maxLength="6"
                       style={{ textTransform: 'uppercase' }}
@@ -299,9 +312,10 @@ function App() {
                     {errors.regNr && <span className="error-message">{errors.regNr}</span>}
                   </div>
 
+                  {/* Märke + Modell — logiskt sammanhörande */}
                   <div className={`form-group ${errors.brand ? 'error' : ''}`}>
                     <label>Bilmärke *</label>
-                    <select 
+                    <select
                       value={formData.brand}
                       onChange={(e) => setFormData({...formData, brand: e.target.value})}
                       onBlur={(e) => validateField('brand', e.target.value)}
@@ -319,9 +333,9 @@ function App() {
 
                   <div className={`form-group ${errors.model ? 'error' : ''}`}>
                     <label>Modell *</label>
-                    <input 
-                      type="text" 
-                      placeholder="V70, Golf..." 
+                    <input
+                      type="text"
+                      placeholder="V70, Golf..."
                       value={formData.model}
                       onChange={(e) => setFormData({...formData, model: e.target.value})}
                       onBlur={(e) => validateField('model', e.target.value)}
@@ -329,12 +343,13 @@ function App() {
                     {errors.model && <span className="error-message">{errors.model}</span>}
                   </div>
 
+                  {/* Årsmodell + Miltal — numeriska specs */}
                   <div className={`form-group ${errors.year ? 'error' : ''}`}>
                     <label>Årsmodell *</label>
-                    <input 
-                      type="number" 
-                      placeholder="2018" 
-                      min="1990" 
+                    <input
+                      type="number"
+                      placeholder="2018"
+                      min="1990"
                       max="2026"
                       value={formData.year}
                       onChange={(e) => setFormData({...formData, year: e.target.value})}
@@ -345,9 +360,9 @@ function App() {
 
                   <div className={`form-group ${errors.mileage ? 'error' : ''}`}>
                     <label>Miltal (mil) *</label>
-                    <input 
-                      type="number" 
-                      placeholder="15000"
+                    <input
+                      type="number"
+                      placeholder="15 000"
                       value={formData.mileage}
                       onChange={(e) => setFormData({...formData, mileage: e.target.value})}
                       onBlur={(e) => validateField('mileage', e.target.value)}
@@ -355,7 +370,8 @@ function App() {
                     {errors.mileage && <span className="error-message">{errors.mileage}</span>}
                   </div>
 
-                  <div className={`form-group ${errors.condition ? 'error' : ''}`}>
+                  {/* Skick — full bredd, viktigt kategorival */}
+                  <div className={`form-group full-width ${errors.condition ? 'error' : ''}`}>
                     <label>Skick *</label>
                     <select
                       value={formData.condition}
@@ -363,13 +379,14 @@ function App() {
                       onBlur={(e) => validateField('condition', e.target.value)}
                     >
                       <option value="">Välj skick</option>
-                      <option value="excellent">Utmärkt</option>
-                      <option value="good">Bra</option>
-                      <option value="fair">Acceptabelt</option>
-                      <option value="poor">Dåligt</option>
+                      <option value="excellent">Utmärkt — inga anmärkningar</option>
+                      <option value="good">Bra — normalt slitage</option>
+                      <option value="fair">Acceptabelt — mindre skador</option>
+                      <option value="poor">Dåligt — behöver renovering</option>
                     </select>
                     {errors.condition && <span className="error-message">{errors.condition}</span>}
                   </div>
+
                 </div>
 
                 <button type="submit" className="submit-button">Få AI-värdering →</button>
@@ -386,12 +403,11 @@ function App() {
           ) : (
             // Visa resultat
             <div className="result-card">
-              <h2 style={{ fontSize: '1.75rem', marginBottom: '2rem', color: 'var(--gray-800)' }}>
-                Din bils uppskattade värde
-              </h2>
-              
-              <div className="result-price">245 000 kr</div>
-              <p className="result-subtitle">Baserat på 1,247 liknande annonser</p>
+              <div className="result-header">
+                <h2>Uppskattat marknadsvärde</h2>
+                <div className="result-price">245 000 kr</div>
+                <p className="result-subtitle">Baserat på 1 247 liknande annonser</p>
+              </div>
 
               <div className="result-details">
                 <h3>Biluppgifter</h3>
@@ -436,35 +452,18 @@ function App() {
       {/* Hur det fungerar */}
       <section className="how-it-works" id="hur">
         <div className="how-container">
-          <h2>Så fungerar vår AI-värdering</h2>
-          
+          <div className="section-label"><span>Hur det fungerar</span></div>
+          <h2>Tre steg till ditt marknadspris</h2>
+
           <div className="steps">
-            {/* Steg 1 */}
-            <div className="step">
-              <div className="step-number">1</div>
-              <h3>Fyll i biluppgifter</h3>
-              <p>
-                Ange registreringsnummer eller fyll i manuellt. Tar 60 sekunder.
-              </p>
-            </div>
-
-            {/* Steg 2 */}
-            <div className="step">
-              <div className="step-number">2</div>
-              <h3>AI analyserar marknaden</h3>
-              <p>
-                Vår AI jämför din bil mot tusentals annonser från Blocket, Wayke, Kvdbil och fler.
-              </p>
-            </div>
-
-            {/* Steg 3 */}
-            <div className="step">
-              <div className="step-number">3</div>
-              <h3>Få värdering & PDF</h3>
-              <p>
-                Se ditt marknadspris direkt och ladda ner professionell värderingsrapport.
-              </p>
-            </div>
+            {stepsConfig.map((step) => (
+              <div className="step" key={step.number}>
+                <div className="step-number">{step.number}</div>
+                <span className="step-icon">{step.icon}</span>
+                <h3>{step.title}</h3>
+                <p>{step.desc}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -472,37 +471,23 @@ function App() {
       {/* Om oss */}
       <section className="about-section" id="om">
         <div className="about-container">
-          <h2>Om VärderaBil</h2>
-          
-          <div className="about-content">
-            <p>
-              VärderaBil grundades 2026 med en enkel vision: att skapa total 
-              transparens på den svenska bilmarknaden. Vi använder avancerad 
-              AI-teknologi för att analysera tusentals bilannonser i realtid 
-              och ge dig det mest rättvisa marknadspriset.
-            </p>
-            
-            <p>
-              Till skillnad från traditionella värderingstjänster jämför vi 
-              data från alla stora bilsajter – Blocket, Wayke, Kvdbil och fler. 
-              Detta ger dig en värdering baserad på faktiska marknadspriser, 
-              inte gissningar.
-            </p>
-            
-            <p>
-              Sedan lanseringen har vi hjälpt över 10,000 svenskar att få 
-              rättvisa värderingar på sina bilar. Helt gratis, helt transparent.
-            </p>
-          </div>
-          
+          <div className="section-label"><span>Om oss</span></div>
+          <h2>Byggt för total transparens</h2>
+
+          <p className="about-intro">
+            VärderaBil grundades 2026 med en enkel vision — att ge svenska bilägare
+            ett rättvist och datadrivet marknadspris. Vi aggregerar realtidsdata från
+            alla stora bilsajter och låter AI räkna ut vad din bil faktiskt är värd.
+          </p>
+
           <div className="about-stats">
             <div className="stat">
-              <div className="stat-number">10,000+</div>
+              <div className="stat-number">10 000+</div>
               <div className="stat-label">Värderingar</div>
             </div>
             <div className="stat">
-              <div className="stat-number">2026</div>
-              <div className="stat-label">Grundat</div>
+              <div className="stat-number">3+</div>
+              <div className="stat-label">Datakällor</div>
             </div>
             <div className="stat">
               <div className="stat-number">100%</div>
@@ -515,13 +500,13 @@ function App() {
       {/* Footer */}
       <footer className="footer">
         <div className="footer-container">
+          <span className="footer-brand">VärderaBil</span>
           <div className="footer-links">
             <a href="#om">Om oss</a>
             <a href="#hur">Hur det fungerar</a>
-            <a href="#faq">FAQ</a>
             <a href="#integritet">Integritetspolicy</a>
           </div>
-          <p>&copy; 2026 VärderaBil. Alla rättigheter förbehållna.</p>
+          <p>&copy; 2026 VärderaBil</p>
         </div>
       </footer>
     </div>
