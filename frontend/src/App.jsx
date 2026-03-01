@@ -1,5 +1,6 @@
 import './App.css'
 import { useEffect, useState } from 'react'
+import AIAssistant from './AIAssistant'
 
 function App() {
   // Scroll-effekt för navbar
@@ -509,6 +510,9 @@ function App() {
           <p>&copy; 2026 VärderaBil</p>
         </div>
       </footer>
+
+      {/* AI Assistant — fixed, site-wide */}
+      <AIAssistant />
     </div>
   )
 }
