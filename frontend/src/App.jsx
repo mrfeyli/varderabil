@@ -1,6 +1,20 @@
 import './App.css'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import AIAssistant from './AIAssistant'
+
+const API_BASE = 'http://localhost:8000'
+
+// Mappar Biluppgifters märkesnamn till våra select-värden
+const BRAND_MAP = {
+  'volvo':         'volvo',
+  'volkswagen':    'volkswagen',
+  'vw':            'volkswagen',
+  'toyota':        'toyota',
+  'bmw':           'bmw',
+  'mercedes':      'mercedes',
+  'mercedes-benz': 'mercedes',
+  'audi':          'audi',
+}
 
 function App() {
   // Scroll-effekt för navbar
@@ -27,6 +41,9 @@ function App() {
   const [loadingText, setLoadingText] = useState('')
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [errors, setErrors] = useState({})
+  const [result, setResult] = useState(null)
+  const [fetchingVehicle, setFetchingVehicle] = useState(false)
+  const [apiError, setApiError] = useState('')
   const [formData, setFormData] = useState({
     regNr: '',
     brand: '',
@@ -135,43 +152,79 @@ function App() {
     return Object.keys(newErrors).length === 0
   }
 
-  // Funktion som körs när användaren klickar "Få AI-värdering"
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    
-    // Validera först
-    if (!validateForm()) {
-      return
+  // Autofyll formulär från reg.nr via Biluppgifter-endpointen
+  const handleRegNrChange = async (e) => {
+    const value = e.target.value.toUpperCase()
+    setFormData(prev => ({ ...prev, regNr: value }))
+
+    if (value.length !== 6) return
+
+    setFetchingVehicle(true)
+    try {
+      const res = await fetch(`${API_BASE}/api/vehicle/${value}`)
+      if (!res.ok) return
+      const vehicle = await res.json()
+      setFormData(prev => ({
+        ...prev,
+        regNr: value,
+        brand:   BRAND_MAP[vehicle.make?.toLowerCase()] ?? prev.brand,
+        model:   vehicle.model                          || prev.model,
+        year:    vehicle.year?.toString()               || prev.year,
+        mileage: vehicle.mileage_mil?.toString()        || prev.mileage,
+      }))
+    } catch {
+      // Tyst fel — användaren fyller i manuellt
+    } finally {
+      setFetchingVehicle(false)
     }
-    
-    // Rensa errors
+  }
+
+  // Skickar formuläret till backend och hämtar riktigt pris
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+
+    if (!validateForm()) return
+
     setErrors({})
-    
-    // Starta laddning
+    setApiError('')
     setIsLoading(true)
-    setLoadingProgress(0)
-    
-    // Steg 1: Analyserar biluppgifter (30%)
-    setLoadingText('Analyserar biluppgifter...')
     setLoadingProgress(30)
-    
-    setTimeout(() => {
-      // Steg 2: Jämför mot marknaden (60%)
+    setLoadingText('Analyserar biluppgifter...')
+
+    try {
+      // Starta fetch direkt, kör animation parallellt
+      const fetchPromise = fetch(`${API_BASE}/api/valuations`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reg_nr:    formData.regNr,
+          brand:     formData.brand,
+          model:     formData.model,
+          year:      parseInt(formData.year),
+          mileage:   parseInt(formData.mileage),
+          condition: formData.condition,
+        }),
+      })
+
+      await new Promise(r => setTimeout(r, 700))
       setLoadingText('Jämför mot tusentals annonser...')
       setLoadingProgress(60)
-      
-      setTimeout(() => {
-        // Steg 3: Beräknar värde (100%)
-        setLoadingText('Beräknar slutligt marknadsvärde...')
-        setLoadingProgress(100)
-        
-        setTimeout(() => {
-          // Visa resultat
-          setIsLoading(false)
-          setShowResult(true)
-        }, 800)
-      }, 1000)
-    }, 1000)
+
+      const res = await fetchPromise
+      if (!res.ok) throw new Error(`HTTP ${res.status}`)
+      const data = await res.json()
+
+      setLoadingText('Beräknar slutligt marknadsvärde...')
+      setLoadingProgress(100)
+      await new Promise(r => setTimeout(r, 600))
+
+      setResult(data)
+      setIsLoading(false)
+      setShowResult(true)
+    } catch {
+      setIsLoading(false)
+      setApiError('Kunde inte ansluta till servern. Kontrollera att backend körs.')
+    }
   }
 
   // Funktion för att börja om
@@ -181,6 +234,8 @@ function App() {
     setLoadingProgress(0)
     setLoadingText('')
     setErrors({})
+    setResult(null)
+    setApiError('')
     setFormData({
       regNr: '',
       brand: '',
@@ -200,6 +255,16 @@ function App() {
     setMobileMenuOpen(false)
   }
 
+  // Ref för reg.nr-fältet — används av "Börja värdera"-knappen
+  const regNrRef = useRef(null)
+
+  const handleStartValuation = (e) => {
+    e.preventDefault()
+    closeMobileMenu()
+    document.getElementById('vardera')?.scrollIntoView({ behavior: 'smooth' })
+    setTimeout(() => regNrRef.current?.focus(), 500)
+  }
+
   const stepsConfig = [
     { number: '01', icon: '⊕', title: 'Fyll i biluppgifter', desc: 'Ange registreringsnummer eller fyll i manuellt. Hela processen tar under 60 sekunder.' },
     { number: '02', icon: '◈', title: 'AI analyserar marknaden', desc: 'Vår AI skannar tusentals annonser från Blocket, Wayke och Kvdbil i realtid.' },
@@ -215,7 +280,7 @@ function App() {
           
           {/* Desktop navigation */}
           <div className="nav-links">
-            <a href="#vardera" className="nav-button">Börja värdera</a>
+            <a href="#vardera" className="nav-button" onClick={handleStartValuation}>Börja värdera</a>
             <a href="#hur">Hur det fungerar</a>
             <a href="#om">Om oss</a>
             <a href="#login">Logga in</a>
@@ -244,7 +309,7 @@ function App() {
         </div>
         
         <div className="mobile-menu-links">
-          <a href="#vardera" onClick={closeMobileMenu}>Börja värdera</a>
+          <a href="#vardera" onClick={handleStartValuation}>Börja värdera</a>
           <a href="#hur" onClick={closeMobileMenu}>Hur det fungerar</a>
           <a href="#om" onClick={closeMobileMenu}>Om oss</a>
           <a href="#login" onClick={closeMobileMenu}>Logga in</a>
@@ -252,7 +317,7 @@ function App() {
       </div>
 
       {/* Värderingsformulär */}
-      <section className="valuation-section">
+      <section className="valuation-section" id="vardera">
         <div className="valuation-container">
           {/* Vänster sida - Text */}
           <div className="hero-content">
@@ -300,14 +365,18 @@ function App() {
 
                   {/* Reg.nr — full bredd, primär identifierare */}
                   <div className={`form-group full-width ${errors.regNr ? 'error' : ''}`}>
-                    <label>Registreringsnummer *</label>
+                    <label>
+                      Registreringsnummer *
+                      {fetchingVehicle && <span style={{ marginLeft: '0.5rem', color: '#10b981', fontSize: '0.68rem', fontWeight: 600 }}>hämtar uppgifter...</span>}
+                    </label>
                     <input
+                      ref={regNrRef}
                       type="text"
                       placeholder="ABC123"
                       maxLength="6"
                       style={{ textTransform: 'uppercase' }}
                       value={formData.regNr}
-                      onChange={(e) => setFormData({...formData, regNr: e.target.value})}
+                      onChange={handleRegNrChange}
                       onBlur={(e) => validateField('regNr', e.target.value)}
                     />
                     {errors.regNr && <span className="error-message">{errors.regNr}</span>}
@@ -390,13 +459,13 @@ function App() {
 
                 </div>
 
+                {apiError && (
+                  <p style={{ color: '#ef4444', fontSize: '0.78rem', marginTop: '0.5rem', textAlign: 'center' }}>
+                    ⚠ {apiError}
+                  </p>
+                )}
                 <button type="submit" className="submit-button">Få AI-värdering →</button>
-                <p style={{ 
-                  textAlign: 'center', 
-                  marginTop: '0.75rem', 
-                  fontSize: '0.8rem',
-                  color: '#6B7280'
-                }}>
+                <p style={{ textAlign: 'center', marginTop: '0.75rem', fontSize: '0.8rem', color: '#6B7280' }}>
                   100% gratis • Svar direkt
                 </p>
               </form>
@@ -406,8 +475,10 @@ function App() {
             <div className="result-card">
               <div className="result-header">
                 <h2>Uppskattat marknadsvärde</h2>
-                <div className="result-price">245 000 kr</div>
-                <p className="result-subtitle">Baserat på 1 247 liknande annonser</p>
+                <div className="result-price">
+                  {result?.estimated_price?.toLocaleString('sv-SE')} kr
+                </div>
+                <p className="result-subtitle">Baserat på bilens årsmodell, miltal och skick</p>
               </div>
 
               <div className="result-details">

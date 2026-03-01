@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from database import engine, get_db
 from models import Base, Car, Valuation
-from schemas import ValuationCreate, ValuationResponse, CarCreate, CarResponse
+from schemas import ValuationCreate, ValuationResponse, ValuationUpdate, CarCreate, CarResponse
 from typing import List
 import httpx
 import os
@@ -156,6 +156,45 @@ def get_valuation(valuation_id: int, db: Session = Depends(get_db)):
     if not valuation:
         raise HTTPException(status_code=404, detail="Värdering hittades inte")
     return valuation
+
+
+@app.get("/api/valuations", response_model=List[ValuationResponse])
+def get_all_valuations(db: Session = Depends(get_db)):
+    """Hämtar alla värderingar."""
+    return db.query(Valuation).order_by(Valuation.id.desc()).all()
+
+
+@app.patch("/api/valuations/{valuation_id}", response_model=ValuationResponse)
+def update_valuation(valuation_id: int, updates: ValuationUpdate, db: Session = Depends(get_db)):
+    """Uppdaterar en värdering och räknar om priset om relevanta fält ändrats."""
+    valuation = db.query(Valuation).filter(Valuation.id == valuation_id).first()
+    if not valuation:
+        raise HTTPException(status_code=404, detail="Värdering hittades inte")
+
+    # Tillämpa de fält som skickades in (bara de som inte är None)
+    changed_fields = updates.model_dump(exclude_none=True)
+    for field, value in changed_fields.items():
+        setattr(valuation, field, value)
+
+    # TODO(human): Ska priset räknas om automatiskt när skick/miltal/år ändras?
+    # Om ja — anropa _calculate_price() med de uppdaterade värdena och sätt
+    # valuation.estimated_price till det nya värdet.
+    # Om nej — låt det gamla priset stå kvar.
+    # Skriv din logik här (2–5 rader):
+
+    db.commit()
+    db.refresh(valuation)
+    return valuation
+
+
+@app.delete("/api/valuations/{valuation_id}", status_code=204)
+def delete_valuation(valuation_id: int, db: Session = Depends(get_db)):
+    """Tar bort en värdering permanent."""
+    valuation = db.query(Valuation).filter(Valuation.id == valuation_id).first()
+    if not valuation:
+        raise HTTPException(status_code=404, detail="Värdering hittades inte")
+    db.delete(valuation)
+    db.commit()
 
 
 @app.get("/api/cars", response_model=List[CarResponse])

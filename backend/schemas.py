@@ -26,6 +26,14 @@ class ValuationResponse(BaseModel):
     class Config:
         from_attributes = True
 
+# Schema för att uppdatera värdering (PATCH — alla fält valfria)
+class ValuationUpdate(BaseModel):
+    brand:     Optional[str]   = None
+    model:     Optional[str]   = None
+    year:      Optional[int]   = None
+    mileage:   Optional[int]   = None
+    condition: Optional[str]   = None
+
 # Schema för bilpris
 class CarCreate(BaseModel):
     brand: str
