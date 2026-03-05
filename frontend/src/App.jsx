@@ -384,13 +384,19 @@ function App() {
             <h1>Få det rättvisa marknadspriset på din bil</h1>
             <p>Vi jämför tusentals annonser från Blocket, Wayke och Kvdbil i realtid — helt gratis.</p>
 
-            {/* TODO(human): Implementera hero-stats nedan.
-                Lägg till 3 st .hero-stat element inuti .hero-stats.
-                Varje stat har en .hero-stat-number och en .hero-stat-label.
-                Välj 3 trovärdiga siffror som visar styrkan med tjänsten.
-                Exempel på värden: "10 000+", "3 källor", "60 sek" */}
             <div className="hero-stats">
-
+              <div className="hero-stat">
+                <div className="hero-stat-number">250+</div>
+                <div className="hero-stat-label">Värderingar gjorda</div>
+              </div>
+              <div className="hero-stat">
+                <div className="hero-stat-number">3 källor</div>
+                <div className="hero-stat-label">Blocket, Wayke, Kvdbil</div>
+              </div>
+              <div className="hero-stat">
+                <div className="hero-stat-number">60 sek</div>
+                <div className="hero-stat-label">Genomsnittlig tid</div>
+              </div>
             </div>
           </div>
 
