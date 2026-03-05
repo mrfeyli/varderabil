@@ -1,6 +1,7 @@
 import './App.css'
 import { useEffect, useState, useRef } from 'react'
 import AIAssistant from './AIAssistant'
+import jsPDF from 'jspdf'
 
 const API_BASE = 'http://localhost:8000'
 
@@ -244,6 +245,64 @@ function App() {
       mileage: '',
       condition: ''
     })
+  }
+
+  // Genererar och laddar ner en PDF-värderingsrapport
+  const generatePDF = () => {
+    const doc = new jsPDF()
+    const conditionLabels = { excellent: 'Utmärkt', good: 'Bra', fair: 'Acceptabelt', poor: 'Dåligt' }
+    const date = new Date().toLocaleDateString('sv-SE')
+    const price = result.estimated_price.toLocaleString('sv-SE') + ' kr'
+
+    // Rubrik
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(20)
+    doc.text('VärderaBil — Värderingsrapport', 20, 25)
+
+    // Datum
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(10)
+    doc.text(`Datum: ${date}`, 20, 34)
+
+    // Separator
+    doc.setDrawColor(180, 180, 180)
+    doc.line(20, 39, 190, 39)
+
+    // Biluppgifter
+    doc.setFontSize(11)
+    const fields = [
+      ['Reg.nr', formData.regNr.toUpperCase()],
+      ['Märke', formData.brand],
+      ['Modell', formData.model],
+      ['Årsmodell', formData.year],
+      ['Miltal', formData.mileage ? `${Number(formData.mileage).toLocaleString('sv-SE')} mil` : '—'],
+      ['Skick', conditionLabels[formData.condition] || formData.condition],
+    ]
+    fields.forEach(([label, value], i) => {
+      const y = 50 + i * 9
+      doc.setFont('helvetica', 'bold')
+      doc.text(label + ':', 20, y)
+      doc.setFont('helvetica', 'normal')
+      doc.text(value || '—', 65, y)
+    })
+
+    // Separator
+    doc.line(20, 108, 190, 108)
+
+    // Pris
+    doc.setFont('helvetica', 'bold')
+    doc.setFontSize(13)
+    doc.text('Uppskattat marknadsvärde:', 20, 120)
+    doc.setFontSize(26)
+    doc.text(price, 20, 134)
+
+    // Fotnot
+    doc.setFont('helvetica', 'normal')
+    doc.setFontSize(9)
+    doc.setTextColor(150, 150, 150)
+    doc.text('Genererad av VärderaBil · varderabil.se', 20, 280)
+
+    doc.save(`vardering-${formData.regNr || 'bil'}.pdf`)
   }
 
   // Hamburgermeny funktioner
@@ -511,7 +570,7 @@ function App() {
               </div>
 
               <div className="result-actions">
-                <button className="btn-primary">Ladda ner PDF →</button>
+                <button className="btn-primary" onClick={generatePDF}>Ladda ner PDF →</button>
                 <button className="btn-secondary" onClick={handleNewValuation}>
                   Gör ny värdering
                 </button>
