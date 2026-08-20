@@ -13,7 +13,22 @@ const QUICK_ACTIONS = [
 // Tips: använd .toLowerCase() och .includes() för att matcha fraser.
 // Returnera alltid en sträng — lägg till fler if-satser för fler ämnen.
 const getAutoResponse = (message) => {
-  return 'Tack för din fråga! Den här funktionen är under utveckling. Fyll i formuläret ovan för att komma igång med din kostnadsfria bilvärdering.'
+  const text = message.toLowerCase()
+
+  if (text.includes('värder') || text.includes('pris')) {
+    return 'VärderaBil använder bilens märke, modell, årsmodell, miltal och skick för att beräkna ett uppskattat marknadsvärde.'
+  }
+  if (text.includes('information') || text.includes('behöver')) {
+    return 'Du behöver registreringsnummer, märke, modell, årsmodell, miltal och bilens skick.'
+  }
+  if (text.includes('snabb') || text.includes('tid')) {
+    return 'En värdering tar normalt bara några sekunder efter att formuläret skickats.'
+  }
+  if (text.includes('gratis') || text.includes('kostar')) {
+    return 'Ja, grundvärderingen är kostnadsfri.'
+  }
+
+  return 'Jag kan hjälpa dig med frågor om hur värderingen fungerar. Du kan också börja direkt genom att fylla i formuläret.'
 }
 
 export default function AIAssistant() {

@@ -17,9 +17,11 @@ app = FastAPI(
     version="1.0.0"
 )
 
+FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "http://localhost:5173")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[FRONTEND_ORIGIN, "http://localhost:5173", "http://localhost:4173"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -176,11 +178,12 @@ def update_valuation(valuation_id: int, updates: ValuationUpdate, db: Session = 
     for field, value in changed_fields.items():
         setattr(valuation, field, value)
 
-    # TODO(human): Ska priset räknas om automatiskt när skick/miltal/år ändras?
-    # Om ja — anropa _calculate_price() med de uppdaterade värdena och sätt
-    # valuation.estimated_price till det nya värdet.
-    # Om nej — låt det gamla priset stå kvar.
-    # Skriv din logik här (2–5 rader):
+    # Räkna om priset efter en uppdatering så att värderingen
+    # alltid matchar bilens aktuella uppgifter.
+    valuation.estimated_price = float(_calculate_price(
+        valuation.brand, valuation.model, valuation.year,
+        valuation.mileage, valuation.condition
+    ))
 
     db.commit()
     db.refresh(valuation)

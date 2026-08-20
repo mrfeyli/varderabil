@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from 'react'
 import AIAssistant from './AIAssistant'
 import jsPDF from 'jspdf'
 
-const API_BASE = 'http://localhost:8000'
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
 
 // Mappar Biluppgifters märkesnamn till våra select-värden
 const BRAND_MAP = {
@@ -45,6 +45,10 @@ function App() {
   const [result, setResult] = useState(null)
   const [fetchingVehicle, setFetchingVehicle] = useState(false)
   const [apiError, setApiError] = useState('')
+  const [valuations, setValuations] = useState([])
+  const [historyLoading, setHistoryLoading] = useState(false)
+  const [editingId, setEditingId] = useState(null)
+  const [editData, setEditData] = useState({ brand: '', model: '', year: '', mileage: '', condition: '' })
   const [formData, setFormData] = useState({
     regNr: '',
     brand: '',
@@ -208,7 +212,7 @@ function App() {
       })
 
       await new Promise(r => setTimeout(r, 700))
-      setLoadingText('Jämför mot tusentals annonser...')
+      setLoadingText('Analyserar marknadsfaktorer...')
       setLoadingProgress(60)
 
       const res = await fetchPromise
@@ -220,11 +224,76 @@ function App() {
       await new Promise(r => setTimeout(r, 600))
 
       setResult(data)
+      await loadValuations()
       setIsLoading(false)
       setShowResult(true)
     } catch {
       setIsLoading(false)
       setApiError('Kunde inte ansluta till servern. Kontrollera att backend körs.')
+    }
+  }
+
+  // Hämtar sparade värderingar från backend (READ)
+  const loadValuations = async () => {
+    setHistoryLoading(true)
+    try {
+      const res = await fetch(`${API_BASE}/api/valuations`)
+      if (!res.ok) throw new Error()
+      setValuations(await res.json())
+    } catch {
+      setApiError('Kunde inte hämta sparade värderingar.')
+    } finally {
+      setHistoryLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    loadValuations()
+  }, [])
+
+  // Startar redigering av en sparad värdering (UPDATE)
+  const startEdit = (valuation) => {
+    setEditingId(valuation.id)
+    setEditData({
+      brand: valuation.brand,
+      model: valuation.model,
+      year: valuation.year,
+      mileage: valuation.mileage,
+      condition: valuation.condition,
+    })
+  }
+
+  // Sparar ändringen till backend (UPDATE)
+  const saveEdit = async (id) => {
+    try {
+      const res = await fetch(`${API_BASE}/api/valuations/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          brand: editData.brand,
+          model: editData.model,
+          year: Number(editData.year),
+          mileage: Number(editData.mileage),
+          condition: editData.condition,
+        }),
+      })
+      if (!res.ok) throw new Error()
+      setEditingId(null)
+      await loadValuations()
+    } catch {
+      setApiError('Kunde inte uppdatera värderingen.')
+    }
+  }
+
+  // Tar bort en sparad värdering från backend (DELETE)
+  const deleteValuation = async (id) => {
+    if (!window.confirm('Vill du ta bort denna värdering?')) return
+    try {
+      const res = await fetch(`${API_BASE}/api/valuations/${id}`, { method: 'DELETE' })
+      if (!res.ok) throw new Error()
+      await loadValuations()
+    } catch {
+      setApiError('Kunde inte ta bort värderingen.')
     }
   }
 
@@ -326,7 +395,7 @@ function App() {
 
   const stepsConfig = [
     { number: '01', icon: '⊕', title: 'Fyll i biluppgifter', desc: 'Ange registreringsnummer eller fyll i manuellt. Hela processen tar under 60 sekunder.' },
-    { number: '02', icon: '◈', title: 'AI analyserar marknaden', desc: 'Vår AI skannar tusentals annonser från Blocket, Wayke och Kvdbil i realtid.' },
+    { number: '02', icon: '◈', title: 'Analyserar marknaden', desc: 'Vår Prisalgoritmen analyserar bilens årsmodell, miltal och skick.' },
     { number: '03', icon: '✦', title: 'Få värdering & PDF', desc: 'Se exakt marknadspris direkt och ladda ner en professionell värderingsrapport.' },
   ]
 
@@ -380,9 +449,9 @@ function App() {
         <div className="valuation-container">
           {/* Vänster sida - Text */}
           <div className="hero-content">
-            <div className="hero-badge">AI-driven bilvärdering</div>
+            <div className="hero-badge">Datadriven bilvärdering</div>
             <h1>Få det rättvisa marknadspriset på din bil</h1>
-            <p>Vi jämför tusentals annonser från Blocket, Wayke och Kvdbil i realtid — helt gratis.</p>
+            <p>Vi analyserar bilens uppgifter och beräknar ett uppskattat marknadsvärde — helt gratis.</p>
 
             <div className="hero-stats">
               <div className="hero-stat">
@@ -404,7 +473,7 @@ function App() {
           {isLoading ? (
             // Visa laddning med progress bar
             <div className="loading-card">
-              <h3>AI analyserar din bil</h3>
+              <h3>Analyserar din bil</h3>
               <p className="loading-subtitle">scanning market data...</p>
 
               <div className="progress-container">
@@ -423,7 +492,7 @@ function App() {
           ) : !showResult ? (
             // Visa formulär
             <div className="form-card">
-              <h2>Få din AI-värdering på 60 sekunder</h2>
+              <h2>Få din bilvärdering på 60 sekunder</h2>
               
               <form onSubmit={handleSubmit}>
                 <div className="form-grid">
@@ -462,6 +531,7 @@ function App() {
                       <option value="bmw">BMW</option>
                       <option value="mercedes">Mercedes</option>
                       <option value="audi">Audi</option>
+                      <option value="renault">Renault</option>
                     </select>
                     {errors.brand && <span className="error-message">{errors.brand}</span>}
                   </div>
@@ -529,7 +599,7 @@ function App() {
                     ⚠ {apiError}
                   </p>
                 )}
-                <button type="submit" className="submit-button">Få AI-värdering →</button>
+                <button type="submit" className="submit-button">Få bilvärdering →</button>
                 <p style={{ textAlign: 'center', marginTop: '0.75rem', fontSize: '0.8rem', color: '#6B7280' }}>
                   100% gratis • Svar direkt
                 </p>
@@ -581,6 +651,56 @@ function App() {
                   Gör ny värdering
                 </button>
               </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Sparade värderingar — CRUD-historik */}
+      <section className="history-section" id="historik">
+        <div className="history-container">
+          <div className="section-label"><span>Sparade värderingar</span></div>
+          <h2>Din värderingshistorik</h2>
+          {historyLoading ? (
+            <p className="history-empty">Hämtar värderingar...</p>
+          ) : valuations.length === 0 ? (
+            <p className="history-empty">Inga sparade värderingar ännu.</p>
+          ) : (
+            <div className="history-list">
+              {valuations.map((valuation) => (
+                <div className="history-card" key={valuation.id}>
+                  {editingId === valuation.id ? (
+                    <div className="history-edit-grid">
+                      <input value={editData.brand} onChange={e => setEditData({...editData, brand: e.target.value})} placeholder="Märke" />
+                      <input value={editData.model} onChange={e => setEditData({...editData, model: e.target.value})} placeholder="Modell" />
+                      <input type="number" value={editData.year} onChange={e => setEditData({...editData, year: e.target.value})} placeholder="År" />
+                      <input type="number" value={editData.mileage} onChange={e => setEditData({...editData, mileage: e.target.value})} placeholder="Miltal" />
+                      <select value={editData.condition} onChange={e => setEditData({...editData, condition: e.target.value})}>
+                        <option value="excellent">Utmärkt</option>
+                        <option value="good">Bra</option>
+                        <option value="fair">Acceptabelt</option>
+                        <option value="poor">Dåligt</option>
+                      </select>
+                      <div className="history-actions">
+                        <button className="btn-primary" onClick={() => saveEdit(valuation.id)}>Spara</button>
+                        <button className="btn-secondary" onClick={() => setEditingId(null)}>Avbryt</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div>
+                        <strong>{valuation.brand} {valuation.model}</strong>
+                        <span>{valuation.reg_nr} · {valuation.year} · {valuation.mileage.toLocaleString('sv-SE')} mil</span>
+                      </div>
+                      <div className="history-price">{valuation.estimated_price.toLocaleString('sv-SE')} kr</div>
+                      <div className="history-actions">
+                        <button className="btn-secondary" onClick={() => startEdit(valuation)}>Ändra</button>
+                        <button className="btn-danger" onClick={() => deleteValuation(valuation.id)}>Ta bort</button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              ))}
             </div>
           )}
         </div>
